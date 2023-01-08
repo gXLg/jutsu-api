@@ -11,6 +11,8 @@ from multiprocessing.pool import ThreadPool
 class Utils:
   @classmethod
   def parse_anime(clazz, html:str, id:str, full:bool = False) -> Anime:
+    if "<div class=\"clear berrors\">" in html:
+      raise NameError("Anime with this id not found")
     pic = re.findall("background: url\('(.*?\\.jpg)'\)", html)[0]
     if full:
       na = re.findall("\\<meta itemprop=\"name\" content=\"(.*?)\"\\>", html)[0]
@@ -560,6 +562,8 @@ class Episode:
     n = n.split("<!-- content -->")[1]
     n = n.split("<!--end content -->")[0]
     n = n.strip()
+    if "<div class=\"clear berrors\">" in n:
+      raise NameError("Episode with this id not found")
 
     titl = re.findall("\\<span itemprop=\"name\"\\>\\<i\\>.*?\\</i\\>(.*?)\\</span\\>", n)[0]
 
