@@ -268,7 +268,8 @@ and `id` is the id used on the site for navigation, fetching etc.
 
 The following example will download the anime
 "One Punch Man" into weeb's secret anime folder
-and will use 3 threads to download simultaneously.
+in full quality and will use 3 threads
+to download simultaneously.
 
 ```py
 import Jutsu
@@ -277,5 +278,12 @@ api = Jutsu.API(verbosity = 1)
 
 search = api.search(keyword = "punch")
 onepunch = search[0]
-onepunch.download(path = "/home/weeb/homework/", threads = 3)
+
+q = [i.quality for i in onepunch.content.seasons[0].episodes[0].players]
+
+onepunch.download(
+  quality = max(q),
+  path = "/home/weeb/homework/",
+  threads = 3
+)
 ```
