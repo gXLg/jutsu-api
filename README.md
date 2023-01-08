@@ -81,7 +81,7 @@ Anime(
 ```
 
 Class `Anime` provides a full information about the selected anime.
-Parsing anime from [`API.search()`](#api.search()) does not give full information,
+Parsing anime from [`API.search()`](#apisearch) does not give full information,
 therefore some parameters have a getter, and if the corresponding parameter is `None`,
 additional information is being fetched from anime's main page.
 All parameters are optional, but at least one of `name:Name, id:str` must be specified.
@@ -135,7 +135,7 @@ More about [`Name`](#name) object is written further down.
 .download(quality:int, path:str = "", threads:int = 1)
 ```
 
-Pretty much the same as [`Anime.download()`](#anime.download()).
+Pretty much the same as [`Anime.download()`](#animedownload).
 `path` is added in front of all locations, so that
 the actual downloading happens at that location.
 Creates folders if the anime has multiple seasons,
@@ -160,7 +160,7 @@ Episode(
 Pretty much the same as [`Anime`](#anime) class.
 `title` is the general name of the episode.
 Fetching episode from [`Anime`](#anime) and getting it with
-an id from [`API.anime()`](#api.anime()) will produce different titles.
+an id from [`API.anime()`](#apianime) will produce different titles.
 `duration` is the length of the episode in seconds.
 `preview` and `thumbnail` are links to pictures of
 the preview and thumbnail respectively.
