@@ -426,8 +426,8 @@ class Season:
       poolmap.append([e, s])
 
   def _path(self, path:str = "") -> str:
-   if path and path[-1] != "/": path += "/"
-   if self.name is not None and self.name.name is not None:
+    if path and path[-1] != "/": path += "/"
+    if self.name is not None and self.name.name is not None:
       t = self.name.name
     else:
       t = ""
