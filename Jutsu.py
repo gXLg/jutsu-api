@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import Self
 
 import requests
 import re
@@ -96,7 +97,7 @@ class Utils:
       )
 
   @classmethod
-  def log(clazz, message:str, level:int = 0):
+  def log(clazz, message:str, level:int = 0) -> None:
     if API.instance.verbosity >= level:
       print(message, file = os.sys.stderr)
 
@@ -114,7 +115,7 @@ class Filter:
 
   @classmethod
   @property
-  def available(clazz) -> Filter:
+  def available(clazz) -> Self:
     if clazz._cache_available is not None:
       return clazz._cache_available
 
@@ -201,7 +202,7 @@ class API:
     self.verbosity = verbosity
     API.instance = self
 
-  def verbosity(self, v:int):
+  def verbosity(self, v:int) -> None:
     self.verbosity = v
 
   def search(self, keyword:str = "", filter:Filter = Filter(), maxpage:int = -1) -> list[Anime]:
@@ -264,7 +265,7 @@ class Anime:
   def __repr__(self) -> str:
     return f"{self.name.name} - {self.name.orig} {self.years}:\n{self.content}"
 
-  def download(self, quality:int, path:str = "", threads:int = 1):
+  def download(self, quality:int, path:str = "", threads:int = 1) -> None:
     if path and path[-1] != "/": path += "/"
     n = path + self.name.name
     os.mkdir(n)
@@ -352,7 +353,7 @@ Years: {", ".join(map(str, self.years))}{" (ongoing)" if self.ongoing else ""}
       self._fetch()
     return self._cache_description
 
-  def _fetch(self):
+  def _fetch(self) -> None:
     Utils.log("Fetching missing information for Anime", 3)
     r = requests.get(
       f"https://jut.su/{self._cache_name.id}", headers = {
@@ -398,7 +399,7 @@ class Season:
     quality:int,
     path:str = "",
     threads:int = 1
-  ):
+  ) -> None:
 
     s = self._path(path)
 
@@ -416,7 +417,7 @@ class Season:
     quality:int,
     path:str,
     poolmap:list[list[Episode, str]]
-  ):
+  ) -> None:
     s = self._path(path = path)
 
     for e in self.episodes:
@@ -485,7 +486,7 @@ class Episode:
   def __repr__(self) -> str:
     return f"{self.title}"
 
-  def download(self, quality:int, path:str = ""):
+  def download(self, quality:int, path:str = "") -> None:
     if path and path[-1] != "/": path += "/"
     if self.name.name is not None:
       t = " - " + self.name.name
@@ -548,7 +549,7 @@ class Episode:
       self._fetch()
     return self._cache_preview
 
-  def _fetch(self):
+  def _fetch(self) -> None:
     Utils.log("Fetching missing information for Episode", 3)
     r = requests.get(
       f"https://jut.su/{self._cache_name.id}", headers = {
@@ -628,7 +629,7 @@ class Player:
   def __repr__(self) -> str:
     return f"{self.link} ({self.quality}p)"
 
-  def download(self, local:str|None = None):
+  def download(self, local:str|None = None) -> None:
     if local is None:
       local = self.link.split("?")[0].split("/")[-1]
     ending = self.link.split("?")[0].split(".")[-1]
