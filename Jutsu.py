@@ -61,7 +61,7 @@ class Utils:
           episodes.append(Episode(title = i[1], id = i[0]))
 
         if "films_title" in ht:
-          ti = re.findall("\\<h2 class=\"b-b-title the-anime-season center films_title\"\\>(.*?)\\</h2\\>", ht)[0]
+          ti = re.findall("\\<h2 class=\".*?the-anime-season center films_title.*?\"\\>(.*?)\\</h2\\>", ht)[0]
           films = Season(title = ti, episodes = episodes, name = None)
           pass
         else:
