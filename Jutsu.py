@@ -192,7 +192,7 @@ class Filter:
       raise ValueError("Filter with more than one sorting cannot be used as a URL")
     s = "".join(i.id for i in self.sorting)
     if s: s += "/"
-    return f"{g}{t}{y}{s}"
+    return f"{g}{y}{s}"
 
 class API:
   instance = None
