@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Self
+from typing import Self, Iterable
 
 import requests
 import re
@@ -264,6 +264,8 @@ class Anime:
     self._cache_content = content
     self._cache_ongoing = ongoing
 
+    self.selector = Selector(self)
+
   def __repr__(self) -> str:
     return f"{self.name.name} - {self.name.orig} {self.years}:\n{self.content}"
 
@@ -373,6 +375,91 @@ Years: {", ".join(map(str, self.years))}{" (ongoing)" if self.ongoing else ""}
     self._cache_description = a.description
     self._cache_ongoing = a.ongoing
 
+class Selector:
+  def __init__(
+    self,
+    parent:Anime
+  ):
+    self.parent = parent
+
+  def select_episodes(
+    self,
+    quality:int|None = None,
+    items:Iterable[int]|None = None
+  ) -> Downloader:
+    ep = []
+    i = 0
+    for s in self.parent.content.seasons:
+      for e in s.episodes:
+        if items is None or i in items:
+          ep.append([e.player(quality), f"s:{i} {e.title}"])
+        i += 1
+
+    if items is not None:
+      if len(ep) < len(items):
+        Utils.log("Warning: Unprocessed items left in Selector", 0)
+
+    return Downloader(items = ep)
+
+  def select_seasons(
+    self,
+    quality:int|None = None,
+    items:list[int]|None = None,
+  ) -> Downloader:
+    ep = []
+    i = 0
+    for s in self.parent.content.seasons:
+      t = (" " + s.title) if s.title is not None else ""
+      if items is None or i in items:
+        for e in s.episodes:
+          ep.append([e.player(quality), f"s:{i}{t}/{e.title}"])
+      i += 1
+
+    if items is not None:
+      if len(ep) < len(items):
+        Utils.log("Warning: Unprocessed items left in Selector", 0)
+
+    return Downloader(items = ep)
+
+  def select_in_seasons(
+    self,
+    quality:int|None = None,
+    items:dict[int, Iterable[int]|None] = { }
+  ) -> Downloader:
+    ep = []
+    for it in items:
+      i = 0
+      s = self.parent.content.seasons[it]
+      t = (" " + s.title) if s.title is not None else ""
+      for e in s.episodes:
+        if items[it] is None or i in items[it]:
+          ep.append([e.player(quality), f"s:{it}{t}/s:{i} {e.title}"])
+        i += 1
+
+    return Downloader(items = ep)
+
+class Downloader:
+  def __init__(self, items:list[list[Player, str]] = []):
+    self.items = items
+
+  def add(self, downloader:Downloader) -> None:
+    self.items.extend(downloader.items)
+
+  def download(self, path:str = "", threads:int = 1) -> None:
+    if path and path[-1] != "/": path += "/"
+    n = path + p
+    os.mkdir(n)
+    if n and n[-1] != "/": n += "/"
+    if threads == 1:
+      for e, p in self.items:
+        e.download(local = n)
+    else:
+      pool = ThreadPool(threads)
+      def downloader(l:list[Player, str]):
+        e, p = l
+        e.download(local = n)
+      pool.map(downloader, poolmap)
+
 class Content:
   def __init__(
     self,
@@ -381,6 +468,10 @@ class Content:
   ):
     self.seasons = seasons
     self.films = films
+    l = 0
+    for s in seasons:
+      l += len(s.episodes)
+    self.count = l
 
   def __repr__(self) -> str:
     return f"Seasons: {self.seasons}\nFilms: {self.films}"
@@ -533,11 +624,15 @@ class Episode:
       self._fetch()
     return self._cache_players
 
-  def player(self, quality:int) -> Player|None:
-    for p in self.players:
-      if p.quality == quality:
-        return p
-    return None
+  def player(self, quality:int|None = None) -> Player|None:
+    if quality is not None:
+      for p in self.players:
+        if p.quality == quality:
+          return p
+      return None
+    else:
+      q = [p.quality for p in self.players]
+      return self.player(quality = max(q))
 
   @property
   def thumbnail(self) -> str:
@@ -637,13 +732,16 @@ class Player:
     if local is None:
       local = self.link.split("?")[0].split("/")[-1]
     ending = self.link.split("?")[0].split(".")[-1]
+    p = f"{local} ({self.quality}p).{ending}"
+    if os.path.exists(p):
+      Utils.log(f"Skipping episode, because file '{p}' exists", 1)
+      return
     with requests.get(
       self.link, headers = {
         "User-Agent": "Mozilla/5.0"
       }, stream = True
     ) as r:
-      p = local + f" ({self.quality}p).{ending}"
-      Utils.log(f"Downloading episode to {p}...", 1)
+      Utils.log(f"Downloading episode to '{p}'...", 1)
       size = int(r.headers["Content-Length"])
       r.raise_for_status()
       with open(p, "wb") as f:

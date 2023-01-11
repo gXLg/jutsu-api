@@ -103,6 +103,15 @@ where specified.
 
 Example `quality`: `720`
 
+### Anime.selector
+
+```py
+.selector:Selector
+```
+
+Property of an `Anime` object, helps with selecting specific episodes for download.
+See more in [`Selector`](#selector)
+
 ## Content
 
 ```py
@@ -111,6 +120,14 @@ Content(seasons:list[Season], films:Season|None = None)
 
 `Content` object provides an accessor for the [`Season`](#season)s and films of an anime.
 Some animes have no films, therefore sometimes the parameter `films` is `None`
+
+### Content.count
+
+```py
+.count:int
+```
+
+The count property gives the total count of episodes in seasons.
 
 ## Season
 
@@ -181,11 +198,12 @@ will be downloaded into the resulting file.
 ### Episode.player()
 
 ```py
-.player(quality:int) -> Player|None
+.player(quality:int|None = None) -> Player|None
 ```
 
 Gets a player with the given `quality` or
 returns `None` if the player is not found.
+If `quality` is `None`, returns highest quality player.
 
 ## Opening
 
@@ -263,6 +281,74 @@ Since the jut.su site is in russian language, the `name`
 is the visible name, `orig` is the english or japanese name
 and `id` is the id used on the site for navigation, fetching etc.
 
+## Selector
+
+```py
+Selector(parent:Anime)
+```
+
+A helper object for specific selections of episodes for download.
+
+### Selector.select_episodes()
+
+```py
+.select_episodes(quality:int|None = None, items:Iterable[int]|None = None) -> Downloader
+```
+
+Selects episodes with specific indexes. This ignores seasons and
+counts each next episode as `index + 1`. Be careful: Index of episodes starts with a `0`.
+If `items` is `None`, everything will be selected.
+The selection quality is the parameter `quality`. If it is `None`, highest
+quality will be selected.
+
+## Downloader.select_seasons()
+
+```py
+.select_seasons(quality:int|None = None, items:Iterable[int]|None = None) -> Downloader
+```
+
+Selects seasons with specific indexes. Those selected seasons are selected
+completely including all their episodes. Indexing begins with a `0`.
+If `items` is `None`, everything will be selected.
+The selection quality is the parameter `quality`. If it is `None`, highest
+quality will be selected.
+
+
+## Downloader.select_in_seasons()
+
+```py
+.select_in_seasons(quality:int|None = None, items:dict[int, Iterable[int]|None]) -> Downloader
+```
+
+Selects specific episodes in specific seasons. Seaons index goes into
+the key of dictionary, the value is an iterator of indexes inside this episode.
+The selection quality is the parameter `quality`. If it is `None`, highest
+quality will be selected.
+
+## Downloader
+
+```py
+Downloader(items:list[list[Player, str]])
+```
+
+The object being returned from [`Selector`](#selector).
+
+### Downloader.add()
+
+```py
+.add(downloader:Downloader)
+```
+
+Adds items of another downloader to itself. Created for merging queues.
+
+### Downloader.download()
+
+```py
+.download(path:str = "", threads:int = 1)
+```
+
+Downloads the queue of the object using threads and a `path`, which is being added
+in front of the location.
 
 # Example
 
@@ -287,3 +373,5 @@ onepunch.download(
   threads = 3
 )
 ```
+
+This example uses [`Selector`](#selector) to download all episodes
