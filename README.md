@@ -303,7 +303,7 @@ If `items` is `None`, everything will be selected.
 The selection quality is the parameter `quality`. If it is `None`, highest
 quality will be selected.
 
-## Downloader.select_seasons()
+### Selector.select_seasons()
 
 ```py
 .select_seasons(quality:int|None = None, items:Iterable[int]|None = None) -> Downloader
@@ -316,7 +316,7 @@ The selection quality is the parameter `quality`. If it is `None`, highest
 quality will be selected.
 
 
-## Downloader.select_in_seasons()
+### Selector.select_in_seasons()
 
 ```py
 .select_in_seasons(quality:int|None = None, items:dict[int, Iterable[int]|None]) -> Downloader
