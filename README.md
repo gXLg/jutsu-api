@@ -89,7 +89,7 @@ All parameters are optional, but at least one of `name:Name, id:str` must be spe
 ### Anime.download()
 
 ```py
-.download(quality:int, path:str = "", threads:int = 1)
+.download(quality:int|None = None, path:str = "", threads:int = 1)
 ```
 
 Downloads the whole anime, walking over seasons and episodes
@@ -150,7 +150,7 @@ More about [`Name`](#name) object is written further down.
 ### Season.download()
 
 ```py
-.download(quality:int, path:str = "", threads:int = 1)
+.download(quality:int|None = None, path:str = "", threads:int = 1)
 ```
 
 Pretty much the same as [`Anime.download()`](#animedownload).
@@ -189,7 +189,7 @@ which also will be explained later.
 ### Episode.download()
 
 ```py
-.download(quality:int, path:str = "")
+.download(quality:int|None = None, path:str = "")
 ```
 
 Downloads an episode with given `quality`.
@@ -227,7 +227,7 @@ Pretty much the same as the [`Opening`](#opening) class.
 ## Player
 
 ```py
-Player(quality:int, link:str)
+Player(quality:int|None = None, link:str)
 ```
 
 Internal object to manage the video of an episode.
