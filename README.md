@@ -94,7 +94,8 @@ All parameters are optional, but at least one of `name:Name, id:str` must be spe
 
 Downloads the whole anime, walking over seasons and episodes
 iteratively and downloading each. `quality` parameter specifies
-the quality of the videos to be downloaded, a valid quality must be enetered.
+the quality of the videos to be downloaded.
+If `quality` is `None`, highest quality will be used.
 `threads` parameter with default value `1`, if it is specified to be not equal `1`,
 will create a ThreadPool and download simultaneously.
 Downloading whole anime will create a folder with it's name and subfolders for seasons.
@@ -192,6 +193,7 @@ which also will be explained later.
 ```
 
 Downloads an episode with given `quality`.
+If `quality` is `None`, highest quality will be used.
 `path` will be added to the title and the episode
 will be downloaded into the resulting file.
 

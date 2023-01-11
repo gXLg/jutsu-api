@@ -269,7 +269,7 @@ class Anime:
   def __repr__(self) -> str:
     return f"{self.name.name} - {self.name.orig} {self.years}:\n{self.content}"
 
-  def download(self, quality:int, path:str = "", threads:int = 1) -> None:
+  def download(self, quality:int|None = None, path:str = "", threads:int = 1) -> None:
     if path and path[-1] != "/": path += "/"
     n = path + self.name.name
     os.mkdir(n)
@@ -489,7 +489,7 @@ class Season:
 
   def download(
     self,
-    quality:int,
+    quality:int|None = None,
     path:str = "",
     threads:int = 1
   ) -> None:
@@ -507,7 +507,7 @@ class Season:
 
   def _download(
     self,
-    quality:int,
+    quality:int|None = None,
     path:str,
     poolmap:list[list[Episode, str]]
   ) -> None:
@@ -579,7 +579,7 @@ class Episode:
   def __repr__(self) -> str:
     return f"{self.title}"
 
-  def download(self, quality:int, path:str = "") -> None:
+  def download(self, quality:int|None = None, path:str = "") -> None:
     if path and path[-1] != "/": path += "/"
     if self.name.name is not None:
       t = " - " + self.name.name
