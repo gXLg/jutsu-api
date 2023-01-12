@@ -447,18 +447,19 @@ class Downloader:
 
   def download(self, path:str = "", threads:int = 1) -> None:
     if path and path[-1] != "/": path += "/"
-    n = path + p
-    os.mkdir(n)
-    if n and n[-1] != "/": n += "/"
     if threads == 1:
       for e, p in self.items:
-        e.download(local = n)
+        if "/" in p:
+          os.mkdir(path + p.split("/")[0])
+        e.download(local = path + p)
     else:
       pool = ThreadPool(threads)
       def downloader(l:list[Player, str]):
         e, p = l
-        e.download(local = n)
-      pool.map(downloader, poolmap)
+        if "/" in p:
+          os.mkdir(path + p.split("/")[0])
+        e.download(local = path + p)
+      pool.map(downloader, self.items)
 
 class Content:
   def __init__(
