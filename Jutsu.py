@@ -507,8 +507,8 @@ class Season:
 
   def _download(
     self,
+    quality:int|None,
     path:str,
-    quality:int|None = None,
     poolmap:list[list[Episode, str]]
   ) -> None:
     s = self._path(path = path)
