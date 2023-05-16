@@ -322,7 +322,7 @@ quality will be selected.
 .select_in_seasons(quality:int|None = None, items:dict[int, Iterable[int]|None]) -> Downloader
 ```
 
-Selects specific episodes in specific seasons. Seaons index goes into
+Selects specific episodes in specific seasons. Seasons index goes into
 the key of dictionary, the value is an iterator of indexes inside this episode.
 The selection quality is the parameter `quality`. If it is `None`, highest
 quality will be selected.
@@ -367,13 +367,26 @@ api = Jutsu.API(verbosity = 1)
 search = api.search(keyword = "punch")
 onepunch = search[0]
 
-q = [i.quality for i in onepunch.content.seasons[0].episodes[0].players]
-
 onepunch.download(
-  quality = max(q),
   path = "/home/weeb/homework/",
   threads = 3
 )
 ```
 
-This example uses [`Selector`](#selector) to download all episodes
+This example uses [`Selector`](#selector) to download everything after episode 5:
+
+```py
+import Jutsu
+
+api = Jutsu.API(verbosity = 1)
+
+search = api.search(keyword = "punch")
+onepunch = search[0]
+
+episodes = onepunch.select_episodes(range(5, onepunch.content.count))
+
+episodes.download(
+  path = "/home/weeb/homework/",
+  threads = 3
+)
+```
