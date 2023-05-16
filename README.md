@@ -383,7 +383,9 @@ api = Jutsu.API(verbosity = 1)
 search = api.search(keyword = "punch")
 onepunch = search[0]
 
-episodes = onepunch.select_episodes(range(5, onepunch.content.count))
+episodes = onepunch.selector.select_episodes(
+  range(5, onepunch.content.count)
+)
 
 episodes.download(
   path = "/home/weeb/homework/",
