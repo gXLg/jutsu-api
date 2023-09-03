@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jutsu-api"
+version = "1.0"
+authors = [
+  { name="dev_null", email="natgaev@gmail.com" },
+]
+description = "Simple and flexible API for jut.su"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/gxlg/jutsu-api"
+"Bug Tracker" = "https://github.com/gxlg/jutsu-api/issues"
