@@ -8,6 +8,17 @@ As a weeb, I have my own favourite site for watching anime.
 Now that I am also a super h4ck3r, I created an API
 for accessing this site and it turned out pretty well.
 
+# Installation
+
+Install the module from PyPi:
+```
+pip install jutsu-api
+```
+Then import it just like that:
+```py
+from jutsu_api import API
+```
+
 # Documentation
 
 ## API
@@ -360,9 +371,9 @@ in full quality and will use 3 threads
 to download simultaneously.
 
 ```py
-import Jutsu
+from jutsu_api import API
 
-api = Jutsu.API(verbosity = 1)
+api = API(verbosity = 1)
 
 search = api.search(keyword = "punch")
 onepunch = search[0]
@@ -376,9 +387,9 @@ onepunch.download(
 This example uses [`Selector`](#selector) to download everything after episode 5:
 
 ```py
-import Jutsu
+from jutsu_api import API
 
-api = Jutsu.API(verbosity = 1)
+api = API(verbosity = 1)
 
 search = api.search(keyword = "punch")
 onepunch = search[0]
