@@ -76,6 +76,17 @@ class Utils:
               nn = Name(id = href, name = None)
               ti = title[1]
             seasons.append(Season(title = ti, episodes = episodes, name = nn))
+          elif "b-b-title the-anime-season center" in ht:
+            title = re.findall("\\<h2 class=\"b-b-title the-anime-season center\"( title=\".*?\")?\\>(.*?)( \\(.*?\\))?\\</h2\\>", ht)[0]
+            if title[0]:
+              ori = title[0].split("\"")[1]
+              nn = Name(id = None, name = title[1], orig = ori)
+              if title[2]: ti = title[2][2:-1]
+              else: ti = None
+            else:
+              nn = Name(id = None, name = None)
+              ti = title[1]
+            seasons.append(Season(title = ti, episodes = episodes, name = nn))
           else:
             seasons.append(Season(title = None, episodes = episodes, name = None))
       content = Content(seasons = seasons, films = films)
