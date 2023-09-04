@@ -272,7 +272,8 @@ class Anime:
   def download(self, quality:int|None = None, path:str = "", threads:int = 1) -> None:
     if path and path[-1] != "/": path += "/"
     n = path + self.name.name
-    os.mkdir(n)
+    try: os.mkdir(n)
+    except FileExistsError: pass
     n += "/"
     with open(n + "README.md", "w") as f:
       f.write(
@@ -450,14 +451,16 @@ class Downloader:
     if threads == 1:
       for e, p in self.items:
         if "/" in p:
-          os.mkdir(path + p.split("/")[0])
+          try: os.mkdir(path + p.split("/")[0])
+          except FileExistsError: pass
         e.download(local = path + p)
     else:
       pool = ThreadPool(threads)
       def downloader(l:list[Player, str]):
         e, p = l
         if "/" in p:
-          os.mkdir(path + p.split("/")[0])
+          try: os.mkdir(path + p.split("/")[0])
+          except FileExistsError: pass
         e.download(local = path + p)
       pool.map(downloader, self.items)
 
@@ -532,7 +535,8 @@ class Season:
 
     s = n + t
     if s:
-      os.mkdir(path + s)
+      try: os.mkdir(path + s)
+      except FileExistsError: pass
       s += "/"
 
     return path + s
