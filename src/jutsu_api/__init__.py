@@ -282,7 +282,7 @@ class Anime:
 
   def download(self, quality:int|None = None, path:str = "", threads:int = 1) -> None:
     if path and path[-1] != "/": path += "/"
-    n = path + self.name.name.replace("/", "\\/")
+    n = path + self.name.name.replace("/", "|")
     try: os.mkdir(n)
     except FileExistsError: pass
     n += "/"
@@ -598,10 +598,10 @@ class Episode:
   def download(self, quality:int|None = None, path:str = "") -> None:
     if path and path[-1] != "/": path += "/"
     if self.name.name is not None:
-      t = " - " + self.name.name.replace("/", "\\/")
+      t = " - " + self.name.name.replace("/", "|")
     else:
       t = ""
-    n = self.title.replace("/", "\\/") + t
+    n = self.title.replace("/", "|") + t
     self.player(quality).download(path + n)
 
   @property
