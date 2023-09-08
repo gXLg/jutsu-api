@@ -114,6 +114,12 @@ class Utils:
     if API.instance.verbosity >= level:
       print(message, file = os.sys.stderr)
 
+  @classmethod
+  def clean_path(clazz, path:str) -> str:
+    for i in "|\\?*<\":>/'":
+      path = path.replace(i, "")
+    return path
+
 class Name:
   def __init__(self, name:str|None, id:str, orig:str|None = None):
     self.name = name
@@ -282,7 +288,7 @@ class Anime:
 
   def download(self, quality:int|None = None, path:str = "", threads:int = 1) -> None:
     if path and path[-1] != "/": path += "/"
-    n = path + self.name.name.replace("/", "|")
+    n = path + Utils.clean_path(self.name.name)
     try: os.mkdir(n)
     except FileExistsError: pass
     n += "/"
@@ -598,10 +604,10 @@ class Episode:
   def download(self, quality:int|None = None, path:str = "") -> None:
     if path and path[-1] != "/": path += "/"
     if self.name.name is not None:
-      t = " - " + self.name.name.replace("/", "|")
+      t = " - " + Utils.clean_path(self.name.name)
     else:
       t = ""
-    n = self.title.replace("/", "|") + t
+    n = Utils.clean_path(self.title) + t
     self.player(quality).download(path + n)
 
   @property
