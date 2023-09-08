@@ -116,8 +116,10 @@ class Utils:
 
   @classmethod
   def clean_path(clazz, path:str) -> str:
-    for i in "|\\?*<\":>/'":
+    for i in "?<\">'":
       path = path.replace(i, "")
+    for i in "\\|*:/":
+      path = path.replace(i, "-")
     return path
 
 class Name:
