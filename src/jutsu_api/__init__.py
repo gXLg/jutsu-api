@@ -760,18 +760,26 @@ class Player:
     if os.path.exists(p):
       Utils.log(f"Skipping episode, because file '{p}' exists", 1)
       return
+    dl = p + ".jutsu-dl"
+    if os.path.exists(dl):
+      Utils.log(f"Resuming download of '{p}'", 1)
+      skip = os.stat(dl).st_size
+    else: skip = 0
     with requests.get(
       self.link, headers = {
-        "User-Agent": "Mozilla/5.0"
+        "User-Agent": "Mozilla/5.0",
+        "Range": f"bytes={skip}-"
       }, stream = True
     ) as r:
-      Utils.log(f"Downloading episode to '{p}'...", 1)
+      if not skip:
+        Utils.log(f"Downloading episode to '{p}'...", 1)
       size = int(r.headers["Content-Length"])
       r.raise_for_status()
-      with open(p, "wb") as f:
+      with open(dl, "wb") as f:
         d = 0
         for chunk in r.iter_content(chunk_size = 512 * 1024):
           f.write(chunk)
           d += len(chunk)
           if not d % 1024 * 1024 * 10:
             Utils.log(f"Progress: {100 * d // size}% with {d} bytes", 2)
+      os.rename(dl, p)
