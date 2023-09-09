@@ -776,7 +776,7 @@ class Player:
       size = int(r.headers["Content-Length"])
       r.raise_for_status()
       with open(dl, "wb") as f:
-        d = 0
+        d = skip
         for chunk in r.iter_content(chunk_size = 512 * 1024):
           f.write(chunk)
           d += len(chunk)

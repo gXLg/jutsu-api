@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "jutsu-api"
-version = "2.0"
+version = "2.1"
 authors = [
   { name="dev_null", email="natgaev@gmail.com" },
 ]
