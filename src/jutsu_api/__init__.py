@@ -773,9 +773,9 @@ class Player:
     ) as r:
       if not skip:
         Utils.log(f"Downloading episode to '{p}'...", 1)
-      size = int(r.headers["Content-Length"])
+      size = int(r.headers["Content-Length"]) + skip
       r.raise_for_status()
-      with open(dl, "wb") as f:
+      with open(dl, "ab") as f:
         d = skip
         for chunk in r.iter_content(chunk_size = 512 * 1024):
           f.write(chunk)
