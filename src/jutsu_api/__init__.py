@@ -321,7 +321,7 @@ Years: {", ".join(map(str, self.years))}{" (ongoing)" if self.ongoing else ""}
       for s in self.content.seasons:
         s._download(quality, path = n, poolmap = poolmap)
       if self.content.films is not None:
-        self.content.films.download(quality, path = n, poolmap = poolmap)
+        self.content.films._download(quality, path = n, poolmap = poolmap)
       Utils.log(f"Pool Map collection finished with final {len(poolmap)} tasks", 1)
       pool = ThreadPool(threads)
       def downloader(l:list[Episode, str]):
