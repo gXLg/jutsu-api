@@ -13,7 +13,7 @@ class Utils:
   def parse_anime(clazz, html:str, id:str, full:bool = False) -> Anime:
     if "<div class=\"clear berrors\">" in html:
       raise NameError("Anime with this id not found")
-    pic = re.findall("background: url\('(.*?\\.jpg)'\)", html)[0]
+    pic = re.findall("background: url\\('(.*?\\.jpg)'\\)", html)[0]
     if full:
       na = re.findall("\\<meta itemprop=\"name\" content=\"(.*?)\"\\>", html)[0]
       orig = re.findall("\\<meta itemprop=\"alternateName\" content=\"(.*?)\"\\>", html)[0]
@@ -54,6 +54,7 @@ class Utils:
 
       seasons = []
       films = None
+      last = None
       for ht in ss:
         episodes = []
         e = ht.split("</h2>", 1)[1] if "</h2>" in ht else ht
@@ -63,10 +64,9 @@ class Utils:
         if "films_title" in ht:
           ti = re.findall("\\<h2 class=\".*?the-anime-season center films_title.*?\"\\>(.*?)\\</h2\\>", ht)[0]
           films = Season(title = ti, episodes = episodes, name = None)
-          pass
         else:
           if "the_invis" in ht:
-            title = re.findall("\\<h2 class=\"b-b-title the-anime-season center\"( title=\".*?\")?\\>(.*?)( \\(.*?\\))?\\</h2\\>", ht)[0]
+            title = re.findall("\\<h2 class=\"b-b-title the-anime-season.*?\"( title=\".*?\")?\\>(.*?)( \\(.*?\\))?\\</h2\\>", ht)[0]
             href = re.findall(f"the_invis\"\\>\\<a href=\"/({id}/.*?)/\"", ht)[0]
             if title[0]:
               ori = title[0].split("\"")[1]
@@ -75,9 +75,9 @@ class Utils:
             else:
               nn = Name(id = href, name = None)
               ti = title[1]
-            seasons.append(Season(title = ti, episodes = episodes, name = nn))
-          elif "b-b-title the-anime-season center" in ht:
-            title = re.findall("\\<h2 class=\"b-b-title the-anime-season center\"( title=\".*?\")?\\>(.*?)( \\(.*?\\))?\\</h2\\>", ht)[0]
+            season = Season(title = ti, episodes = episodes, name = nn)
+          elif "b-b-title the-anime-season" in ht:
+            title = re.findall("\\<h2 class=\"b-b-title the-anime-season.*?\"( title=\".*?\")?\\>(.*?)( \\(.*?\\))?\\</h2\\>", ht)[0]
             if title[0]:
               ori = title[0].split("\"")[1]
               nn = Name(id = None, name = title[1], orig = ori)
@@ -86,9 +86,20 @@ class Utils:
             else:
               nn = Name(id = None, name = None)
               ti = title[1]
-            seasons.append(Season(title = ti, episodes = episodes, name = nn))
+            season = Season(title = ti, episodes = episodes, name = nn)
           else:
-            seasons.append(Season(title = None, episodes = episodes, name = None))
+            season = Season(title = None, episodes = episodes, name = None)
+
+          if not episodes:
+            last = [season.title, season.name.id]
+            continue
+          elif last is not None:
+            season.title = last[0]
+            season.name.id = last[1]
+            last = None
+
+          seasons.append(season)
+
       content = Content(seasons = seasons, films = films)
 
       return Anime(
@@ -547,8 +558,7 @@ class Season:
       t = ""
     if self.title:
       n = self.title
-      if t:
-        n += " - "
+      if t: n += " - "
     else:
       n = ""
 
@@ -569,11 +579,10 @@ class Season:
       if self.name.name is not None:
         n = self.name.name
     if n:
-      t += ", "
+      if t: t += ", "
       n += ": "
     else:
-      if t:
-        t += ": "
+      if t: t += ": "
     return f"{t}{n}{self.episodes}"
 
 class Episode:
