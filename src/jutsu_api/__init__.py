@@ -142,11 +142,17 @@ class Name:
   def __repr__(self) -> str:
     return f"[{self.name}]({self.id})"
 
+class classproperty:
+  def __init__(self, func):
+    self.func = func
+
+  def __get__(self, ins, own):
+    return self.func(own)
+
 class Filter:
   _cache_available = None
 
-  @classmethod
-  @property
+  @classproperty
   def available(clazz) -> Self:
     if clazz._cache_available is not None:
       return clazz._cache_available
